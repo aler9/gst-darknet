@@ -25,12 +25,16 @@ typedef struct
 
   /* properties */
   gchar *labels;
+  gchar *box_color;
+  gchar *text_color;
 
   GstPad *sinkpad;
   GstPad *srcpad;
   guint width;
   guint height;
   gchar **label_lines;
+  guint8 box_color_r, box_color_b, box_color_g;
+  guint8 text_color_r, text_color_b, text_color_g;
 
 } GstDarknetRender;
 

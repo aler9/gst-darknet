@@ -132,6 +132,9 @@ multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! v
 
 `darknetrender` properties:
 * `labels`: path to a label file
+* `box-color`: color of the boxes in HTML format (default is 00FFFF)
+* `text-color`: color of the text in HTML format (default is 000000)
+
 
 ### Export detections
 

@@ -16,22 +16,22 @@ sed -i 's/^height=.*$/height=512/' /${MODEL}.cfg
 # multifilesrc location=/giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! videoconvert ! video/x-raw,format=RGB \
 # ! d.sink_1 d.src_1 ! darknetrender labels=/coco.names ! videoconvert ! xvimagesink sync=1
 
+gst-launch-1.0 \
+filesrc location=/test.mp4 ! decodebin \
+! videoconvert \
+! darknetinfer name=d config=/${MODEL}.cfg weights=/${MODEL}.weights print-fps-period=2 \
+! darknetrender labels=/coco.names box-color=FFFF00 \
+! videoconvert \
+! xvimagesink sync=1
+
 # gst-launch-1.0 \
 # filesrc location=/test.mp4 ! decodebin \
 # ! videoconvert \
 # ! darknetinfer name=d config=/${MODEL}.cfg weights=/${MODEL}.weights print-fps-period=2 \
 # ! darknetrender labels=/coco.names \
 # ! videoconvert \
-# ! xvimagesink sync=1
-
-gst-launch-1.0 \
-filesrc location=/test.mp4 ! decodebin \
-! videoconvert \
-! darknetinfer name=d config=/${MODEL}.cfg weights=/${MODEL}.weights print-fps-period=2 \
-! darknetrender labels=/coco.names \
-! videoconvert \
-! x264enc bitrate=1000 \
-! mp4mux \
-! filesink location=/orig/out.mp4
+# ! x264enc bitrate=1000 \
+# ! mp4mux \
+# ! filesink location=/orig/out.mp4
 
 # /export

@@ -110,7 +110,7 @@ gst_darknetprint_class_init (GstDarknetPrintClass * klass)
   object_class->set_property = gst_darknetprint_set_property;
 
   g_object_class_install_property (object_class, PROP_LABELS,
-      g_param_spec_string ("labels", "labels", "Path of the labels file",
+      g_param_spec_string ("labels", "labels", "path to a label file",
           "", G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
   gst_element_class_set_details_simple (element_class,

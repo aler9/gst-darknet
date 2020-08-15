@@ -28,9 +28,38 @@ enum
 {
   PROP_0,
   PROP_LABELS,
+  PROP_BOX_COLOR,
+  PROP_TEXT_COLOR,
 };
 
 #define PROP_LABELS_DEFAULT     ""
+#define PROP_BOX_COLOR_DEFAULT  "00FFFF"
+#define PROP_TEXT_COLOR_DEFAULT "000000"
+
+static void
+gst_darknetrender_parse_html_color (const gchar * str, guint8 * r, guint8 * g,
+    guint8 * b)
+{
+  if (strlen (str) != 6) {
+    g_print ("ERR: invalid HTML color length");
+    exit (1);
+  }
+
+  gchar tmp[3];
+  tmp[2] = 0;
+
+  tmp[0] = str[0];
+  tmp[1] = str[1];
+  *r = strtol (tmp, NULL, 16);
+
+  tmp[0] = str[2];
+  tmp[1] = str[3];
+  *g = strtol (tmp, NULL, 16);
+
+  tmp[0] = str[4];
+  tmp[1] = str[5];
+  *b = strtol (tmp, NULL, 16);
+}
 
 static void
 gst_darknetrender_set_property (GObject * object, guint prop_id,
@@ -42,6 +71,20 @@ gst_darknetrender_set_property (GObject * object, guint prop_id,
     case PROP_LABELS:
       g_free (filter->labels);
       filter->labels = g_value_dup_string (value);
+      break;
+
+    case PROP_BOX_COLOR:
+      g_free (filter->box_color);
+      filter->box_color = g_value_dup_string (value);
+      gst_darknetrender_parse_html_color (filter->box_color,
+          &filter->box_color_r, &filter->box_color_g, &filter->box_color_b);
+      break;
+
+    case PROP_TEXT_COLOR:
+      g_free (filter->text_color);
+      filter->text_color = g_value_dup_string (value);
+      gst_darknetrender_parse_html_color (filter->text_color,
+          &filter->text_color_r, &filter->text_color_g, &filter->text_color_b);
       break;
 
     default:
@@ -99,7 +142,8 @@ gst_darknetrender_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
   for (guint i = 0; i < meta->detection_count; i++) {
     GstDarknetMetaDetection *det = &meta->detections[i];
 
-    cairo_set_source_rgb (cairo, 0, 255, 255);
+    cairo_set_source_rgb (cairo, filter->box_color_r, filter->box_color_g,
+        filter->box_color_b);
     cairo_set_line_width (cairo, LINE_WIDTH);
 
     cairo_rectangle (cairo, det->xmin, det->ymin, det->xmax - det->xmin,
@@ -122,7 +166,8 @@ gst_darknetrender_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
         extents.width + TEXT_PADDING * 2, extents.height + TEXT_PADDING * 2);
     cairo_fill (cairo);
 
-    cairo_set_source_rgb (cairo, 0, 0, 0);
+    cairo_set_source_rgb (cairo, filter->text_color_r, filter->text_color_g,
+        filter->text_color_b);
     cairo_move_to (cairo, det->xmin + TEXT_PADDING, det->ymin - TEXT_PADDING);
     cairo_show_text (cairo, text);
 
@@ -173,8 +218,17 @@ gst_darknetrender_class_init (GstDarknetRenderClass * klass)
   object_class->set_property = gst_darknetrender_set_property;
 
   g_object_class_install_property (object_class, PROP_LABELS,
-      g_param_spec_string ("labels", "labels", "Path of the labels file",
+      g_param_spec_string ("labels", "labels", "path to a label file",
           "", G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_BOX_COLOR,
+      g_param_spec_string ("box-color", "box-color", "color of the boxes",
+          "", G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_TEXT_COLOR,
+      g_param_spec_string ("text-color", "text-color",
+          "color of the text in HTML format", "",
+          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
   gst_element_class_set_details_simple (element_class,
       "Plugin",
@@ -198,6 +252,14 @@ gst_darknetrender_init (GstDarknetRender * filter)
   g_print ("[darknetrender] init()\n");
 
   filter->labels = g_strdup (PROP_LABELS_DEFAULT);
+  filter->box_color = g_strdup (PROP_BOX_COLOR_DEFAULT);
+  filter->text_color = g_strdup (PROP_TEXT_COLOR_DEFAULT);
+
+  gst_darknetrender_parse_html_color (filter->box_color,
+      &filter->box_color_r, &filter->box_color_g, &filter->box_color_b);
+
+  gst_darknetrender_parse_html_color (filter->text_color,
+      &filter->text_color_r, &filter->text_color_g, &filter->text_color_b);
 
   filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
   gst_pad_set_event_function (filter->sinkpad, gst_darknetrender_sink_event);
