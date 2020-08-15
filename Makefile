@@ -22,6 +22,10 @@ CUDA_DIR ?= /usr/local/cuda
 ########################################
 # dependency check
 
+ifeq ($(shell ls darknet),)
+    $(info $(shell git submodule update --init))
+endif
+
 ifeq ($(shell which pkg-config),)
     $(error pkg-config not found)
 endif
@@ -176,13 +180,13 @@ DARKNET_CXXFLAGS := \
 
 DARKNET_NVCCFLAGS := $(NV_OPTIMIZE_FLAGS)
 
-$(BUILD_DIR)/darknet_%.o: darknet/src/%.c | $(BUILD_DIR) $(wildcard darknet/src/*.h)
+$(BUILD_DIR)/darknet_%.o: darknet/src/%.c | $(BUILD_DIR) $(wildcard darknet/src/*.h) darknet/include/darknet.h
 	$(CC) $(DARKNET_CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/darknet_%.o: darknet/src/%.cpp | $(BUILD_DIR) $(wildcard darknet/src/*.h)
+$(BUILD_DIR)/darknet_%.o: darknet/src/%.cpp | $(BUILD_DIR) $(wildcard darknet/src/*.h) darknet/include/darknet.h
 	$(CXX) $(DARKNET_CXXFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/darknet_%.o: darknet/src/%.cu | $(BUILD_DIR) $(wildcard darknet/src/*.h)
+$(BUILD_DIR)/darknet_%.o: darknet/src/%.cu | $(BUILD_DIR) $(wildcard darknet/src/*.h) darknet/include/darknet.h
 	$(NVCC) $(DARKNET_NVCCFLAGS) --compiler-options "$(DARKNET_CXXFLAGS)" -c $< -o $@
 
 $(BUILD_DIR)/$(DARKNET_NAME): $(DARKNET_OBJS)
@@ -220,7 +224,7 @@ GSTPLUGIN_LDFLAGS := \
 	$(GSTREAMER_VIDEO_LDFLAGS) \
 	$(CAIRO_LDFLAGS)
 
-$(BUILD_DIR)/gstplugin_%.o: %.c | $(BUILD_DIR) $(wildcard *.h)
+$(BUILD_DIR)/gstplugin_%.o: %.c | $(BUILD_DIR) $(wildcard *.h) darknet/include/darknet.h
 	$(CC) $(GSTPLUGIN_CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/$(GSTPLUGIN_NAME): $(GSTPLUGIN_OBJS) | $(BUILD_DIR)/$(DARKNET_NAME)

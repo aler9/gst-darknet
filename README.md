@@ -33,11 +33,10 @@ The plugin provides these elements:
    libcairo2-dev
    ```
 
-3. Clone the repository, enter into the folder, initialize submodules:
+3. Clone the repository, enter into the folder:
    ```
    git clone https://github.com/aler9/gst-darknet \
-   && cd gst-darknet \
-   && git submodule update --init
+   && cd gst-darknet
    ```
 
 4. Compile and install:
