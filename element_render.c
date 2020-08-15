@@ -5,7 +5,7 @@
 #include "element_render.h"
 
 #define LINE_WIDTH      2
-#define TEXT_FONT       "Purisa"
+#define TEXT_FONT       "Arial"
 #define TEXT_SIZE       13
 #define TEXT_PADDING    5
 
