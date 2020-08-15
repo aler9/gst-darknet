@@ -1,7 +1,9 @@
 
 # gst-darknet
 
-gst-darknet is a GStreamer plugin that allows to use [Darknet](https://github.com/AlexeyAB/darknet) (neural network framework) inside GStreamer, to perform object detection against files or real-time streams. For instance, this command:
+![](README.gif)
+
+gst-darknet is a GStreamer plugin that allows to use [Darknet](https://github.com/AlexeyAB/darknet) (neural network framework) inside GStreamer, to perform object detection against files or real-time streams. For instance, the video above was generated with this command:
 ```
 gst-launch-1.0 \
 filesrc location=test.mp4 ! decodebin ! videoconvert \
@@ -11,12 +13,9 @@ filesrc location=test.mp4 ! decodebin ! videoconvert \
 ! xvimagesink sync=1
 ```
 
-Results in:
-![](README.gif)
-
 The plugin provides these elements:
 * `darknetinfer`, that runs Darknet against one or multiple input videos
-* `darknetprint`, that prints to stdout the detected objects
+* `darknetprint`, that prints the detected objects to stdout
 * `darknetrender`, that draws the detected objects on the input video
 
 ## Installation
@@ -136,7 +135,7 @@ multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! v
 
 ### Export detections
 
-One of the ways to export detections consists in launching GStreamer through a C program that makes use of the GStreamer API, exposing the detections:
+One of the ways to export detections consists in launching GStreamer through a C program that makes use of the GStreamer API. The detections are then available in a C struct (`GstDarknetMetaDetection`) and can be exported in any desired way.
 
 1. Copy [examples/export.c](examples/export.c) in an empty folder, edit to suit needs.
 
