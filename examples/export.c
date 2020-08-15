@@ -12,7 +12,7 @@ on_sample (GstElement * element, gpointer data)
   GstBuffer *buf = gst_sample_get_buffer (sample);
 
   // get detections
-  static const GstMetaInfo *metainfo;
+  static const GstMetaInfo *metainfo = NULL;
   if (metainfo == NULL) {
     metainfo = gst_meta_get_info ("GstDarknetMetaDetections");
   }
@@ -20,10 +20,10 @@ on_sample (GstElement * element, gpointer data)
       (GstDarknetMetaDetections *) gst_buffer_get_meta (buf,
       metainfo->api);
 
-  // print detection count
+  // detection count is available in the detection_count variable
   g_print ("detections: %d\n", meta->detection_count);
 
-  // print single detections
+  // detections are available in the detections variable
   for (guint i = 0; i < meta->detection_count; i++) {
     GstDarknetMetaDetection *det = &meta->detections[i];
     g_print ("* prob=%.2f%% box=[%u %u %u %u] class=%d\n",
@@ -35,13 +35,12 @@ on_sample (GstElement * element, gpointer data)
   return GST_FLOW_OK;
 }
 
-// called once
 int
 main (int argc, char *argv[])
 {
   gst_init (&argc, &argv);
 
-  // edit the pipeline to suit your needs. Leave appsink at the end.
+  // create the pipeline. edit to suit your needs. Leave appsink at the end.
   GstElement *pipeline =
       gst_parse_launch ("filesrc location=test.mp4 ! decodebin \
         ! videoconvert \
