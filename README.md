@@ -119,6 +119,7 @@ multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! v
 ### Element documentation
 
 `darknetinfer` properties:
+* `gpu-id`: GPU to use for inference (default is 0)
 * `config`: path to a Darknet config file
 * `weights`: path to a Darknet weights file
 * `probability-threshold`: probability threshold of detected objects (default is 0.7)

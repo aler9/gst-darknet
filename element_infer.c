@@ -20,6 +20,7 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src_%u",
 enum
 {
   PROP_0,
+  PROP_GPU_ID,
   PROP_CONFIG,
   PROP_WEIGHTS,
   PROP_PROBABILITY_THRESHOLD,
@@ -42,6 +43,10 @@ gst_darknetinfer_set_property (GObject * object, guint prop_id,
   GstDarknetInfer *filter = GST_DARKNETINFER (object);
 
   switch (prop_id) {
+    case PROP_GPU_ID:
+      filter->gpu_id = g_value_get_uint (value);
+      break;
+
     case PROP_CONFIG:
       g_free (filter->config);
       filter->config = g_value_dup_string (value);
@@ -213,6 +218,7 @@ static void
 gst_darknetinfer_init_after_props (GstDarknetInfer * filter)
 {
   g_mutex_init (&filter->mutex);
+  cuda_set_device (filter->gpu_id);
   filter->net = load_network_custom (filter->config, filter->weights, 0, 1);
 
   if (filter->print_fps) {
@@ -255,6 +261,10 @@ gst_darknetinfer_class_init (GstDarknetInferClass * klass)
   GstElementClass *element_class = (GstElementClass *) klass;
 
   object_class->set_property = gst_darknetinfer_set_property;
+
+  g_object_class_install_property (object_class, PROP_GPU_ID,
+      g_param_spec_uint ("gpu-id", "gpu-id", "GPU to use for inference",
+          0, 100, 0, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_CONFIG,
       g_param_spec_string ("config", "config", "path to a Darknet config file",

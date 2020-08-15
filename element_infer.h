@@ -33,6 +33,7 @@ typedef struct
   GstElement element;
 
   /* properties */
+  guint gpu_id;
   gchar *config;
   gchar *weights;
   float probability_threshold;
