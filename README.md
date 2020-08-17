@@ -3,7 +3,7 @@
 
 ![](README.gif)
 
-gst-darknet is a GStreamer plugin that allows to use [Darknet](https://github.com/AlexeyAB/darknet) (neural network framework) inside GStreamer, to perform object detection against files or real-time streams. For instance, the video above was generated with the following command:
+gst-darknet is a GStreamer plugin that allows to use [Darknet](https://github.com/AlexeyAB/darknet) (neural network framework) inside GStreamer, to perform object detection against video files or real-time streams. For instance, the video above was generated with the following command:
 ```
 gst-launch-1.0 \
 filesrc location=test.mp4 ! decodebin ! videoconvert \
