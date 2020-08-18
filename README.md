@@ -109,10 +109,10 @@ filesink location=output.mp4
 Launch the pipeline:
 ```
 gst-launch-1.0 \
-darknetinfer name=d config=yolov4.cfg weights=yolov4.cfg.weights \
-multifilesrc location=dog.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! videoconvert ! video/x-raw,format=RGB \
+darknetinfer name=d config=yolov4.cfg weights=yolov4.weights \
+multifilesrc location=dog.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! videoconvert \
 ! d.sink_0 d.src_0 ! darknetrender labels=coco.names ! videoconvert ! xvimagesink sync=1 \
-multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! videoconvert ! video/x-raw,format=RGB \
+multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! videoconvert \
 ! d.sink_1 d.src_1 ! darknetrender labels=coco.names ! videoconvert ! xvimagesink sync=1
 ```
 
