@@ -72,6 +72,17 @@ The plugin provides these elements:
    ! xvimagesink sync=1
    ```
 
+   If the platform is a Nvidia Jetson:
+
+   ```
+   gst-launch-1.0 \
+   filesrc location=test.mp4 ! decodebin ! nvvideoconvert ! videoconvert \
+   ! darknetinfer config=yolov4.cfg weights=yolov4.weights \
+   ! darknetrender labels=coco.names \
+   ! videoconvert \
+   ! xvimagesink sync=1
+   ```
+
 ## Advanced usage and FAQs
 
 ### Use a RTSP stream instead of a file
