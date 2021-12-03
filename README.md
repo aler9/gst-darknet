@@ -4,6 +4,7 @@
 ![](README.gif)
 
 gst-darknet is a GStreamer plugin that allows to use [Darknet](https://github.com/AlexeyAB/darknet) (neural network framework) inside GStreamer, to perform object detection against video files or real-time streams. For instance, the video above was generated with the following command:
+
 ```
 gst-launch-1.0 \
 filesrc location=test.mp4 ! decodebin ! videoconvert \
@@ -14,6 +15,7 @@ filesrc location=test.mp4 ! decodebin ! videoconvert \
 ```
 
 The plugin provides these elements:
+
 * `darknetinfer`, that runs Darknet against one or multiple input videos
 * `darknetprint`, that prints the detected objects to stdout
 * `darknetrender`, that draws the detected objects on the input video
@@ -23,6 +25,7 @@ The plugin provides these elements:
 1. [Install CUDA Toolkit](https://developer.nvidia.com/cuda-downloads).
 
 2. Install build dependencies:
+
    ```
    sudo apt update && sudo apt install -y \
    git \
@@ -34,12 +37,14 @@ The plugin provides these elements:
    ```
 
 3. Clone the repository, enter into the folder:
+
    ```
    git clone https://github.com/aler9/gst-darknet \
    && cd gst-darknet
    ```
 
 4. Compile and install:
+
    ```
    make -j$(nproc) \
    && sudo make install
@@ -48,6 +53,7 @@ The plugin provides these elements:
 ## Basic usage
 
 1. Download config, weights, class labels and a sample video:
+
    ```
    wget https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg \
    && wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights \
@@ -56,6 +62,7 @@ The plugin provides these elements:
    ```
 
 2. Launch the pipeline:
+
    ```
    gst-launch-1.0 \
    filesrc location=test.mp4 ! decodebin ! videoconvert \
@@ -70,6 +77,7 @@ The plugin provides these elements:
 ### Use a RTSP stream instead of a file
 
 Launch the pipeline:
+
 ```
 gst-launch-1.0 \
 rtspsrc location=rtsp://myurl:554/mypath ! decodebin ! videoconvert \
@@ -82,6 +90,7 @@ rtspsrc location=rtsp://myurl:554/mypath ! decodebin ! videoconvert \
 ### Print detections to stdout
 
 Launch the pipeline:
+
 ```
 gst-launch-1.0 \
 filesrc location=test.mp4 ! decodebin ! videoconvert \
@@ -93,6 +102,7 @@ filesrc location=test.mp4 ! decodebin ! videoconvert \
 ### Save video with detections to disk
 
 Launch the pipeline:
+
 ```
 gst-launch-1.0 \
 filesrc location=test.mp4 ! decodebin ! videoconvert \
@@ -107,6 +117,7 @@ filesink location=output.mp4
 ### Process multiple inputs at once
 
 Launch the pipeline:
+
 ```
 gst-launch-1.0 \
 darknetinfer name=d config=yolov4.cfg weights=yolov4.weights \
@@ -119,6 +130,7 @@ multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! v
 ### Element documentation
 
 `darknetinfer` properties:
+
 * `gpu-id`: GPU to use for inference (default is 0)
 * `config`: path to a Darknet config file
 * `weights`: path to a Darknet weights file
@@ -128,9 +140,11 @@ multifilesrc location=giraffe.jpg caps="image/jpeg,framerate=20/1" ! jpegdec ! v
 * `print-fps-period`: Period of FPS printing in seconds (default is 5)
 
 `darknetprint` properties:
+
 * `labels`: path to a label file
 
 `darknetrender` properties:
+
 * `labels`: path to a label file
 * `box-color`: color of the boxes in HTML format (default is 00FFFF)
 * `text-color`: color of the text in HTML format (default is 000000)
@@ -143,6 +157,7 @@ One of the ways to export detections consists in launching GStreamer through a C
 1. Copy [examples/export.c](examples/export.c) in an empty folder, edit to suit needs.
 
 2. Compile (replace `/path-to-gst-darknet`):
+
    ```
    gcc -Ofast -Werror -Wall -Wextra -Wno-unused-parameter \
    -I/path-to-gst-darknet \
@@ -151,6 +166,7 @@ One of the ways to export detections consists in launching GStreamer through a C
    ```
 
 3. Launch:
+
    ```
    ./export
    ```
