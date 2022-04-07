@@ -1,4 +1,8 @@
 
+# ARCHIVED
+
+This project makes use of Yolo v4 and the Darknet framework. Nowadays there more efficient and precise ways to perform object inference with GStreamer, for instance by using Nvidia Deepstream with Yolo v5, YOLO-R, etc. I suggest you to take a look at these.
+
 # gst-darknet
 
 ![](README.gif)
